@@ -119,7 +119,7 @@ if (musicButton && music) {
 
 const weddingDate =
     new Date(
-        "2026-10-04T08:00:00+07:00"
+        "2026-10-17T08:00:00+07:00"
     ).getTime();
 
 
@@ -212,7 +212,7 @@ const guestName =
 
 
 const message =
-    `Assalamu'alaikum, saya ${guestName}. Saya ingin mengonfirmasi kehadiran pada acara pernikahan Angga & Nur.`;
+    `Assalamu'alaikum, saya ${guestName}. Saya ingin mengonfirmasi kehadiran pada acara pernikahan Adi & Kiya.`;
 
 
 const whatsappLink =
