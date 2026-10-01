@@ -1,47 +1,61 @@
 /* =========================================================
-   NAMA TAMU
+NAMA TAMU
 ========================================================= */
 
-const params = new URLSearchParams(
-    window.location.search
-);
+const params = new URLSearchParams(window.location.search);
 
 const guest = params.get("to");
 
-if (guest) {
-    document.getElementById("guestName").textContent =
-        decodeURIComponent(
-            guest.replace(/\+/g, " ")
-        );
+const guestNameElement =
+document.getElementById("guestName");
+
+if (guest && guestNameElement) {
+
+guestNameElement.textContent =
+    guest.replace(/\+/g, " ");
+
 }
 
-
 /* =========================================================
-   BUKA UNDANGAN + MUSIK
+ELEMEN UTAMA
 ========================================================= */
 
 const openButton =
-    document.getElementById("openInvitation");
+document.getElementById("openInvitation");
 
 const opening =
-    document.getElementById("opening");
+document.getElementById("opening");
 
 const mainContent =
-    document.getElementById("mainContent");
+document.getElementById("mainContent");
 
 const music =
-    document.getElementById("weddingMusic");
+document.getElementById("weddingMusic");
 
+const musicButton =
+document.getElementById("musicButton");
+
+/* =========================================================
+BUKA UNDANGAN + MUSIK
+========================================================= */
+
+if (openButton && opening && mainContent) {
 
 openButton.addEventListener(
     "click",
     async function () {
 
-        /* Sembunyikan cover */
+        /* Sembunyikan halaman pembuka */
         opening.style.display = "none";
 
         /* Tampilkan isi undangan */
         mainContent.classList.remove("hidden");
+
+        /* Kembali ke posisi paling atas */
+        window.scrollTo({
+            top: 0,
+            behavior: "instant"
+        });
 
         /* Putar musik */
         if (music) {
@@ -49,6 +63,16 @@ openButton.addEventListener(
             try {
 
                 await music.play();
+
+                if (musicButton) {
+
+                    musicButton.textContent = "♫";
+
+                    musicButton.classList.add(
+                        "playing"
+                    );
+
+                }
 
             } catch (error) {
 
@@ -61,225 +85,297 @@ openButton.addEventListener(
 
         }
 
-        /* Kembali ke posisi paling atas */
-        window.scrollTo(0, 0);
+    }
+);
+
+}
+
+/* =========================================================
+TOMBOL MUSIK
+========================================================= */
+
+if (musicButton && music) {
+
+musicButton.addEventListener(
+    "click",
+    async function () {
+
+        if (music.paused) {
+
+            try {
+
+                await music.play();
+
+                musicButton.textContent = "♫";
+
+                musicButton.classList.add(
+                    "playing"
+                );
+
+            } catch (error) {
+
+                console.log(
+                    "Musik gagal diputar.",
+                    error
+                );
+
+            }
+
+        } else {
+
+            music.pause();
+
+            musicButton.textContent = "🔇";
+
+            musicButton.classList.remove(
+                "playing"
+            );
+
+        }
 
     }
 );
 
 
-/* =========================================================
-   TOMBOL MUSIK
-========================================================= */
+/* Sinkronisasi jika audio berubah */
+music.addEventListener(
+    "play",
+    function () {
 
-const musicButton =
-    document.getElementById("musicButton");
+        musicButton.textContent = "♫";
+
+        musicButton.classList.add(
+            "playing"
+        );
+
+    }
+);
 
 
-if (musicButton && music) {
+music.addEventListener(
+    "pause",
+    function () {
 
-    musicButton.addEventListener(
-        "click",
-        async function () {
+        musicButton.textContent = "🔇";
 
-            if (music.paused) {
+        musicButton.classList.remove(
+            "playing"
+        );
 
-                try {
-
-                    await music.play();
-
-                    musicButton.textContent = "♫";
-
-                } catch (error) {
-
-                    console.log(
-                        "Musik gagal diputar.",
-                        error
-                    );
-
-                }
-
-            } else {
-
-                music.pause();
-
-                musicButton.textContent = "🔇";
-
-            }
-
-        }
-    );
+    }
+);
 
 }
 
-
 /* =========================================================
-   COUNTDOWN
+COUNTDOWN
 ========================================================= */
 
 const weddingDate =
-    new Date(
-        "2026-10-17T08:00:00+07:00"
-    ).getTime();
-
+new Date(
+"2026-10-17T08:00:00+07:00"
+).getTime();
 
 function updateCountdown() {
 
-    const now =
-        new Date().getTime();
+const now =
+    new Date().getTime();
 
-    const distance =
-        weddingDate - now;
-
-
-    if (distance <= 0) {
-
-        document.getElementById("days").textContent = 0;
-        document.getElementById("hours").textContent = 0;
-        document.getElementById("minutes").textContent = 0;
-        document.getElementById("seconds").textContent = 0;
-
-        return;
-
-    }
+const distance =
+    weddingDate - now;
 
 
-    const days =
-        Math.floor(
-            distance /
-            (1000 * 60 * 60 * 24)
-        );
+const daysElement =
+    document.getElementById("days");
+
+const hoursElement =
+    document.getElementById("hours");
+
+const minutesElement =
+    document.getElementById("minutes");
+
+const secondsElement =
+    document.getElementById("seconds");
 
 
-    const hours =
-        Math.floor(
-            (distance /
-                (1000 * 60 * 60))
-            % 24
-        );
+if (
+    !daysElement ||
+    !hoursElement ||
+    !minutesElement ||
+    !secondsElement
+) {
 
-
-    const minutes =
-        Math.floor(
-            (distance /
-                (1000 * 60))
-            % 60
-        );
-
-
-    const seconds =
-        Math.floor(
-            (distance / 1000)
-            % 60
-        );
-
-
-    document.getElementById("days").textContent =
-        days;
-
-    document.getElementById("hours").textContent =
-        hours;
-
-    document.getElementById("minutes").textContent =
-        minutes;
-
-    document.getElementById("seconds").textContent =
-        seconds;
+    return;
 
 }
 
+
+if (distance <= 0) {
+
+    daysElement.textContent = "0";
+    hoursElement.textContent = "0";
+    minutesElement.textContent = "0";
+    secondsElement.textContent = "0";
+
+    return;
+
+}
+
+
+const days =
+    Math.floor(
+        distance /
+        (1000 * 60 * 60 * 24)
+    );
+
+
+const hours =
+    Math.floor(
+        (distance /
+            (1000 * 60 * 60))
+        % 24
+    );
+
+
+const minutes =
+    Math.floor(
+        (distance /
+            (1000 * 60))
+        % 60
+    );
+
+
+const seconds =
+    Math.floor(
+        (distance / 1000)
+        % 60
+    );
+
+
+daysElement.textContent =
+    days;
+
+hoursElement.textContent =
+    String(hours).padStart(2, "0");
+
+minutesElement.textContent =
+    String(minutes).padStart(2, "0");
+
+secondsElement.textContent =
+    String(seconds).padStart(2, "0");
+
+}
 
 updateCountdown();
 
 setInterval(
-    updateCountdown,
-    1000
+updateCountdown,
+1000
 );
 
-
 /* =========================================================
-   WHATSAPP RSVP
+WHATSAPP RSVP
 ========================================================= */
 
+/*
+GANTI NOMOR INI DENGAN NOMOR WHATSAPP TUJUAN.
+
+Format:
+628xxxxxxxxxx
+
+Jangan gunakan:
++62
+spasi
+tanda -
+*/
+
 const whatsappNumber =
-    "6281234567890";
+"6281234567890";
 
-
-const guestName =
-    document.getElementById(
-        "guestName"
-    ).textContent;
-
+const currentGuestName =
+guestNameElement
+? guestNameElement.textContent
+: "Tamu Undangan";
 
 const message =
-    `Assalamu'alaikum, saya ${guestName}. Saya ingin mengonfirmasi kehadiran pada acara pernikahan Adi & Kiya.`;
-
+"Assalamu'alaikum, saya ${currentGuestName}. Saya ingin mengonfirmasi kehadiran pada acara pernikahan Angga & Nur.";
 
 const whatsappLink =
-    "https://wa.me/" +
-    whatsappNumber +
-    "?text=" +
-    encodeURIComponent(message);
+"https://wa.me/" +
+whatsappNumber +
+"?text=" +
+encodeURIComponent(message);
 
-
+const whatsappButton =
 document.getElementById(
-    "whatsappButton"
-).href =
+"whatsappButton"
+);
+
+if (whatsappButton) {
+
+whatsappButton.href =
     whatsappLink;
 
+}
 
 /* =========================================================
-   COPY REKENING
+COPY REKENING
 ========================================================= */
 
 const copyButton =
-    document.querySelector(
-        ".copy-button"
-    );
-
+document.querySelector(
+".copy-button"
+);
 
 if (copyButton) {
 
-    copyButton.addEventListener(
-        "click",
-        async function () {
+copyButton.addEventListener(
+    "click",
+    async function () {
 
-            const number =
-                this.dataset.copy;
-
-
-            try {
-
-                await navigator
-                    .clipboard
-                    .writeText(number);
+        const number =
+            this.dataset.copy;
 
 
-                this.textContent =
-                    "Berhasil Disalin ✓";
+        if (!number) {
 
-
-                setTimeout(
-                    () => {
-
-                        this.textContent =
-                            "Salin Nomor Rekening";
-
-                    },
-                    2000
-                );
-
-
-            } catch (error) {
-
-                alert(
-                    "Nomor rekening: " +
-                    number
-                );
-
-            }
+            return;
 
         }
-    );
+
+
+        try {
+
+            await navigator.clipboard.writeText(
+                number
+            );
+
+
+            this.textContent =
+                "Berhasil Disalin ✓";
+
+
+            setTimeout(
+                () => {
+
+                    this.textContent =
+                        "Salin Nomor Rekening";
+
+                },
+                2000
+            );
+
+
+        } catch (error) {
+
+            alert(
+                "Nomor rekening: " +
+                number
+            );
+
+        }
+
+    }
+);
 
 }
