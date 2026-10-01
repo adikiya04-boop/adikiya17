@@ -290,7 +290,7 @@ tanda -
 */
 
 const whatsappNumber =
-"6281234567890";
+"6281336301291";
 
 const currentGuestName =
 guestNameElement
